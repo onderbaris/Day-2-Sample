@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An interactive introduction to AI agents.">
+  <title>AI Agents | The Interactive Guide</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0b1020;
+      --surface: #141c31;
+      --surface-alt: #1c2741;
+      --text: #f1f5ff;
+      --muted: #b6c2dc;
+      --accent: #7df0ce;
+      --blue: #90baff;
+      --border: #2c3954;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    body.light {
+      color-scheme: light;
+      --background: #f4f7fc;
+      --surface: #ffffff;
+      --surface-alt: #eaf0fa;
+      --text: #17243b;
+      --muted: #465977;
+      --accent: #006b55;
+      --blue: #285fb6;
+      --border: #ccd7e7;
+      --shadow: 0 18px 50px rgba(25, 45, 80, 0.08);
+    }
+
+    a {
+      color: var(--blue);
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    button,
+    a,
+    select,
+    summary {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--blue);
+      outline-offset: 5px;
+    }
+
+    .container {
+      width: min(1120px, 90%);
+      margin-inline: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -100px;
+      z-index: 100;
+      padding: 12px 18px;
+      background: var(--surface);
+    }
+
+    .skip-link:focus {
+      top: 12px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--background);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-block: 14px;
+    }
+
+    .brand {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 20px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: var(--accent);
+      color: var(--background);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      filter: brightness(1.08);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .button.small {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 55px;
+      align-items: center;
+      padding: 85px 0 70px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+    }
+
+    h1 {
+      margin: 18px 0 24px;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      letter-spacing: -0.055em;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    h2 {
+      margin: 12px 0 20px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: -0.035em;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    .lead {
+      font-size: 1.12rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .hero-panel {
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-label {
+      margin: 0 0 20px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .flow-node {
+      padding: 16px 18px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .flow-node strong {
+      display: block;
+      color: var(--text);
+    }
+
+    .flow-node span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--accent);
+      margin: 4px;
+      font-size: 1.3rem;
+    }
+
+    section {
+      padding: 65px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-intro {
+      max-width: 730px;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 27px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-number {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .callout {
+      margin-top: 25px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--accent);
+      background: var(--surface-alt);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      min-width: 150px;
+    }
+
+    th {
+      color: var(--accent);
+      background: var(--surface-alt);
+    }
+
+    td {
+      color: var(--muted);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .demo {
+      padding: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    select {
+      width: 100%;
+      max-width: 480px;
+      padding: 12px;
+      background: var(--background);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .stages {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0;
+      margin: 28px 0;
+      list-style: none;
+    }
+
+    .stages li {
+      padding: 14px;
+      text-align: center;
+      background: var(--surface-alt);
+      border: 2px solid transparent;
+      border-radius: 9px;
+      color: var(--muted);
+    }
+
+    .stages li.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .demo-output {
+      min-height: 140px;
+      padding: 22px;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .demo-output h3 {
+      margin-top: 0;
+    }
+
+    .demo-output p {
+      margin-bottom: 0;
+    }
+
+    .small-text {
+      font-size: 0.9rem;
+    }
+
+    .checklist {
+      padding-left: 22px;
+      color: var(--muted);
+    }
+
+    .checklist li {
+      margin-bottom: 12px;
+    }
+
+    details {
+      margin-bottom: 12px;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    summary {
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    details p {
+      margin-bottom: 0;
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+      margin: 0 0 25px;
+    }
+
+    legend {
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .answer {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 400;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .answer:hover {
+      background: var(--surface-alt);
+    }
+
+    .answer input {
+      margin-top: 7px;
+      accent-color: var(--accent);
+    }
+
+    #quiz-result {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    footer {
+      padding: 30px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    noscript p {
+      padding: 16px;
+      background: var(--surface-alt);
+    }
+
+    @media (max-width: 850px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding-top: 50px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      header {
+        position: static;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .grid,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .stages {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      section {
+        padding: 45px 0;
+      }
+
+      .demo,
+      .hero-panel,
+      .card {
+        padding: 21px;
+      }
+
+      .button {
+        text-align: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header>
+    <nav class="container" aria-label="Main navigation">
+      <a href="#top" class="brand">AGENT<span>FIELD</span></a>
+
+      <div class="nav-links">
+        <a href="#basics">Basics</a>
+        <a href="#examples">Examples</a>
+        <a href="#playground">Demo</a>
+        <a href="#faq">FAQ</a>
+        <button
+          class="button secondary small"
+          id="theme-button"
+          type="button"
+          aria-pressed="false">
+          Light mode
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <noscript>
+      <p>
+        You can read the whole guide without JavaScript.
+        Enable JavaScript to use the theme switch, demonstration, and quiz.
+      </p>
+    </noscript>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow">A practical introduction</div>
+        <h1>Understand AI.<br><span>Meet the agents.</span></h1>
+        <p class="lead">
+          AI agents combine models, instructions, and tools to work toward
+          a goal. Explore how they make choices, carry out actions,
+          and check what happened.
+        </p>
+        <div class="actions">
+          <a class="button" href="#basics">Start reading</a>
+          <a class="button secondary" href="#playground">Try the demo</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="An example agent workflow">
+        <p class="panel-label">THE BASIC AGENT LOOP</p>
+
+        <div class="flow-node">
+          <strong>Receive a goal</strong>
+          <span>Understand the request and its limits.</span>
+        </div>
+
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+
+        <div class="flow-node">
+          <strong>Choose an action</strong>
+          <span>Select a useful next step or tool.</span>
+        </div>
+
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+
+        <div class="flow-node">
+          <strong>Observe the result</strong>
+          <span>Check progress and update the plan.</span>
+        </div>
+
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+
+        <div class="flow-node">
+          <strong>Continue or finish</strong>
+          <span>Repeat, ask for help, or deliver the result.</span>
+        </div>
+      </aside>
+    </div>
+
+    <section id="basics">
+      <div class="section-intro">
+        <div class="eyebrow">01 / The basics</div>
+        <h2>What is an AI agent?</h2>
+        <p>
+          An AI agent is a software system that uses an AI model to help
+          decide which actions to take toward a goal. Depending on its
+          design and permissions, it may read information, use tools,
+          produce files, or interact with other software.
+        </p>
+        <p>
+          The term covers many designs. Some agents follow a tightly
+          controlled sequence. Others can choose between several actions
+          and adapt based on the results. Being an agent does not mean
+          being conscious, always correct, or fully independent.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="card-number">01 — GOAL</span>
+          <h3>A defined outcome</h3>
+          <p>
+            A useful goal explains what success looks like. “Compare these
+            three documents and list their differences” is more actionable
+            than “do some research.”
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="card-number">02 — CONTEXT</span>
+          <h3>Relevant information</h3>
+          <p>
+            Instructions, documents, conversation history, and tool results
+            give the agent information it can use when deciding what to do.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="card-number">03 — TOOLS</span>
+          <h3>Ways to take action</h3>
+          <p>
+            Tools can provide search, calculations, file access, or
+            application features. The agent can only use capabilities
+            that its environment actually provides.
+          </p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <p>
+          <strong>A simple example:</strong> instead of only explaining how
+          to summarize a folder of reports, an appropriately equipped agent
+          could read the reports, draft a comparison, and check whether each
+          conclusion is supported.
+        </p>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <div class="section-intro">
+        <div class="eyebrow">02 / Key differences</div>
+        <h2>Chatbots, workflows, and agents.</h2>
+        <p>
+          These categories can overlap. The main distinction is how the
+          system chooses and performs its next step.
+        </p>
+      </div>
+
+      <div
+        class="table-wrapper"
+        role="region"
+        aria-label="Comparison of software approaches"
+        tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Aspect</th>
+              <th scope="col">Basic chatbot</th>
+              <th scope="col">Fixed workflow</th>
+              <th scope="col">AI agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Main pattern</td>
+              <td>Responds to messages.</td>
+              <td>Follows predefined steps.</td>
+              <td>Selects actions toward a goal.</td>
+            </tr>
+            <tr>
+              <td>Next step</td>
+              <td>Usually prompted by the user.</td>
+              <td>Determined by rules and conditions.</td>
+              <td>May be chosen using a model.</td>
+            </tr>
+            <tr>
+              <td>Tool use</td>
+              <td>Optional.</td>
+              <td>Configured in the workflow.</td>
+              <td>Often used to gather information or act.</td>
+            </tr>
+            <tr>
+              <td>Example</td>
+              <td>Explains a programming concept.</td>
+              <td>Renames files using a fixed pattern.</td>
+              <td>Investigates a bug and checks a proposed fix.</td>
+            </tr>
+            <tr>
+              <td>Human involvement</td>
+              <td>Direct conversation.</td>
+              <td>Setup and exception handling.</td>
+              <td>Goals, boundaries, review, and approvals as needed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="components">
+      <div class="section-intro">
+        <div class="eyebrow">03 / Inside the system</div>
+        <h2>The building blocks.</h2>
+        <p>
+          Agent systems usually combine several components.
+          Their reliability depends on how those components work together.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <h3>The model</h3>
+          <p>
+            Interprets input, produces responses, and may propose actions.
+            Its output can be useful without being guaranteed correct.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Instructions</h3>
+          <p>
+            Define the task, scope, output format, and boundaries.
+            Clear instructions help reduce ambiguity.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Tools</h3>
+          <p>
+            Connect the system to useful capabilities, such as reading
+            a document or running a calculation.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>State and memory</h3>
+          <p>
+            Keep track of the current task. Longer-term memory is optional
+            and depends on what the application stores and retrieves.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Control logic</h3>
+          <p>
+            Manages the action loop, handles tool results, and applies
+            stopping conditions or limits.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Verification</h3>
+          <p>
+            Uses checks, evidence, or human review to assess the result.
+            A confident response alone is not verification.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="examples">
+      <div class="section-intro">
+        <div class="eyebrow">04 / Practical uses</div>
+        <h2>What can agents help with?</h2>
+        <p>
+          The available tools and permissions determine what is possible.
+          These examples describe potential workflows, not guaranteed abilities.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Research assistance</h3>
+          <p>
+            Gather relevant sources, compare claims, and prepare a summary
+            that links conclusions to supporting evidence.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Software development</h3>
+          <p>
+            Read a codebase, investigate an issue, propose an edit,
+            and run appropriate checks in a development environment.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Document work</h3>
+          <p>
+            Extract important points, compare versions, and prepare
+            structured drafts from provided material.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Data analysis</h3>
+          <p>
+            Inspect a dataset, identify missing values, calculate summaries,
+            and explain patterns with their limitations.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Customer support</h3>
+          <p>
+            Retrieve relevant guidance, draft answers, and pass unusual
+            or unresolved cases to a person.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Administrative tasks</h3>
+          <p>
+            Organize information, prepare meeting notes, and draft
+            follow-up items within a clearly defined scope.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="playground">
+      <div class="section-intro">
+        <div class="eyebrow">05 / Interactive walkthrough</div>
+        <h2>Follow an agent through a task.</h2>
+        <p>
+          Choose a scenario and advance through four stages.
+          This is a scripted teaching demonstration, not a connected AI agent.
+        </p>
+      </div>
+
+      <div class="demo">
+        <label for="scenario">Choose a task</label>
+        <select id="scenario">
+          <option value="research">Prepare a research summary</option>
+          <option value="code">Investigate a software bug</option>
+          <option value="data">Analyze a small dataset</option>
+        </select>
+
+        <ol class="stages" aria-label="Task stages">
+          <li>1. Plan</li>
+          <li>2. Act</li>
+          <li>3. Check</li>
+          <li>4. Deliver</li>
+        </ol>
+
+        <div
+          class="demo-output"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true">
+          <h3 id="stage-title">Ready to begin</h3>
+          <p id="stage-description">
+            Select a task, then press “Start walkthrough.”
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="button" id="next-button" type="button">
+            Start walkthrough
+          </button>
+          <button class="button secondary" id="reset-button" type="button">
+            Reset
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="good-instructions">
+      <div class="section-intro">
+        <div class="eyebrow">06 / Working with agents</div>
+        <h2>Give a task a clear finish line.</h2>
+        <p>
+          A useful request includes an outcome, relevant context,
+          constraints, and a way to assess the result.
+        </p>
+      </div>
+
+      <div class="two-column">
+        <article class="card">
+          <h3>A vague request</h3>
+          <p>“Look at my documents and do something useful.”</p>
+          <p>
+            This leaves the scope, purpose, and expected result unclear.
+            The agent may need clarification before it can make progress.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>A clearer request</h3>
+          <p>
+            “Compare the three reports I provided. Write a one-page summary
+            of their shared findings and disagreements. Cite the relevant
+            report for each major point, and flag missing information.”
+          </p>
+          <p>
+            This specifies the inputs, output, scope, and evidence standard.
+          </p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <p>
+          <strong>Reusable structure:</strong>
+          “Using [inputs], produce [output] for [audience].
+          Follow [constraints]. Check the result by [verification method].
+          Ask me when [decision boundary].”
+        </p>
+      </div>
+    </section>
+
+    <section id="limitations">
+      <div class="section-intro">
+        <div class="eyebrow">07 / Limits and oversight</div>
+        <h2>Useful systems still need checks.</h2>
+        <p>
+          More steps and more tools can expand what an agent does,
+          but they also create more opportunities for errors.
+        </p>
+      </div>
+
+      <div class="two-column">
+        <article class="card">
+          <h3>Common failure modes</h3>
+          <ul class="checklist">
+            <li>Misunderstanding an ambiguous goal.</li>
+            <li>Producing unsupported claims or incorrect calculations.</li>
+            <li>Using incomplete or outdated information.</li>
+            <li>Choosing an unsuitable tool or misreading its output.</li>
+            <li>Continuing without recognizing that the task is blocked.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Useful design choices</h3>
+          <ul class="checklist">
+            <li>Define success and stopping conditions.</li>
+            <li>Provide only the access needed for the task.</li>
+            <li>Check important claims against source material.</li>
+            <li>Use meaningful tests where appropriate.</li>
+            <li>Keep human review for consequential decisions.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <div class="section-intro">
+        <div class="eyebrow">08 / Check your understanding</div>
+        <h2>A quick three-question quiz.</h2>
+      </div>
+
+      <form id="quiz-form" class="card">
+        <fieldset>
+          <legend>1. What best describes an AI agent?</legend>
+          <label class="answer">
+            <input type="radio" name="q1" value="a" required>
+            <span>A system that is always correct.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q1" value="b">
+            <span>A system that uses AI to select actions toward a goal.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q1" value="c">
+            <span>A website that must be connected to a robot.</span>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. What determines which tools an agent can use?</legend>
+          <label class="answer">
+            <input type="radio" name="q2" value="a" required>
+            <span>The capabilities and permissions its environment provides.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q2" value="b">
+            <span>Any tool the agent mentions in its answer.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q2" value="c">
+            <span>Every application on the internet automatically.</span>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. What is a useful way to check an agent's result?</legend>
+          <label class="answer">
+            <input type="radio" name="q3" value="a" required>
+            <span>Trust it whenever the wording sounds confident.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q3" value="b">
+            <span>Assume that a longer answer must be more accurate.</span>
+          </label>
+          <label class="answer">
+            <input type="radio" name="q3" value="c">
+            <span>Compare it with evidence, meaningful tests, or human review.</span>
+          </label>
+        </fieldset>
+
+        <button class="button" type="submit">Check my answers</button>
+        <p id="quiz-result" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="faq">
+      <div class="section-intro">
+        <div class="eyebrow">09 / Common questions</div>
+        <h2>Frequently asked questions.</h2>
+      </div>
+
+      <details>
+        <summary>Is an AI agent the same as an AI model?</summary>
+        <p>
+          No. The model is one component. The agent system also includes
+          the instructions, control logic, available tools, and context
+          used to carry out a task.
+        </p>
+      </details>
+
+      <details>
+        <summary>Do all agents need internet access?</summary>
+        <p>
+          No. An agent can work with local models, files, and tools if its
+          environment supports them. Access to online information requires
+          a suitable connection and tools.
+        </p>
+      </details>
+
+      <details>
+        <summary>Can an agent remember everything?</summary>
+        <p>
+          No. The information available to an agent depends on its context
+          limits and the application's storage and retrieval design.
+          Persistent memory is an optional feature.
+        </p>
+      </details>
+
+      <details>
+        <summary>Does using multiple agents always improve results?</summary>
+        <p>
+          No. Dividing a task can help when the parts are independent,
+          but coordination can add cost, delay, and mistakes. A simpler
+          system may be more effective for a straightforward task.
+        </p>
+      </details>
+
+      <details>
+        <summary>Is this page running a real AI agent?</summary>
+        <p>
+          No. This page is an offline educational guide. Its interactive
+          walkthrough uses predefined examples and does not send data
+          to an AI service.
+        </p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <p>AGENTFIELD · An introduction to AI agents.</p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // Theme switch: no storage or network connection required.
+      var themeButton = document.getElementById("theme-button");
+
+      themeButton.addEventListener("click", function () {
+        var lightMode = document.body.classList.toggle("light");
+
+        themeButton.textContent = lightMode
+          ? "Dark mode"
+          : "Light mode";
+
+        themeButton.setAttribute("aria-pressed", String(lightMode));
+      });
+
+      // Predefined examples for the educational walkthrough.
+      var scenarios = {
+        research: [
+          {
+            title: "Plan: define the question",
+            description:
+              "Identify the research topic, audience, and scope. Decide " +
+              "which kinds of sources would support a useful answer."
+          },
+          {
+            title: "Act: gather relevant material",
+            description:
+              "Use available search or document tools to collect sources. " +
+              "Record where each important claim came from."
+          },
+          {
+            title: "Check: compare the evidence",
+            description:
+              "Look for conflicting findings, missing context, and claims " +
+              "that lack support. Revise the draft where needed."
+          },
+          {
+            title: "Deliver: present the summary",
+            description:
+              "Provide a clear summary with source references, key " +
+              "disagreements, and remaining uncertainty."
+          }
+        ],
+
+        code: [
+          {
+            title: "Plan: understand the reported bug",
+            description:
+              "Identify the expected behavior, actual behavior, and steps " +
+              "that reproduce the problem."
+          },
+          {
+            title: "Act: investigate and propose a fix",
+            description:
+              "Inspect relevant code and available error information. " +
+              "Make a focused change that addresses the likely cause."
+          },
+          {
+            title: "Check: verify the behavior",
+            description:
+              "Run suitable checks and test the reported scenario. " +
+              "Investigate failures rather than assuming the fix worked."
+          },
+          {
+            title: "Deliver: explain the change",
+            description:
+              "Summarize what changed, what was checked, and any " +
+              "remaining limitations for the reviewer."
+          }
+        ],
+
+        data: [
+          {
+            title: "Plan: define the analysis",
+            description:
+              "Clarify the question, identify relevant columns, and " +
+              "decide what a useful output should contain."
+          },
+          {
+            title: "Act: inspect and calculate",
+            description:
+              "Examine the dataset for missing values and inconsistent " +
+              "formats, then calculate the requested summaries."
+          },
+          {
+            title: "Check: validate the results",
+            description:
+              "Check totals, units, assumptions, and unusual values. " +
+              "Make sure conclusions match what the data supports."
+          },
+          {
+            title: "Deliver: report the findings",
+            description:
+              "Present the results with clear labels and explain " +
+              "limitations, including gaps in the underlying data."
+          }
+        ]
+      };
+
+      var scenarioSelect = document.getElementById("scenario");
+      var nextButton = document.getElementById("next-button");
+      var resetButton = document.getElementById("reset-button");
+      var stageTitle = document.getElementById("stage-title");
+      var stageDescription = document.getElementById("stage-description");
+      var stageItems = document.querySelectorAll(".stages li");
+      var currentStage = -1;
+
+      function updateStageMarkers() {
+        for (var i = 0; i < stageItems.length; i++) {
+          var active = i === currentStage;
+
+          stageItems[i].classList.toggle("active", active);
+
+          if (active) {
+            stageItems[i].setAttribute("aria-current", "step");
+          } else {
+            stageItems[i].removeAttribute("aria-current");
+          }
+        }
+      }
+
+      function resetDemo() {
+        currentStage = -1;
+        stageTitle.textContent = "Ready to begin";
+        stageDescription.textContent =
+          "Select a task, then press “Start walkthrough.”";
+        nextButton.textContent = "Start walkthrough";
+        updateStageMarkers();
+      }
+
+      nextButton.addEventListener("click", function () {
+        var selectedStages = scenarios[scenarioSelect.value];
+
+        currentStage = (currentStage + 1) % selectedStages.length;
+
+        stageTitle.textContent = selectedStages[currentStage].title;
+        stageDescription.textContent =
+          selectedStages[currentStage].description;
+
+        nextButton.textContent =
+          currentStage === selectedStages.length - 1
+            ? "Restart walkthrough"
+            : "Next stage";
+
+        updateStageMarkers();
+      });
+
+      resetButton.addEventListener("click", resetDemo);
+      scenarioSelect.addEventListener("change", resetDemo);
+
+      // Quiz scoring runs entirely in the browser.
+      var quizForm = document.getElementById("quiz-form");
+      var quizResult = document.getElementById("quiz-result");
+
+      quizForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var correctAnswers = {
+          q1: "b",
+          q2: "a",
+          q3: "c"
+        };
+
+        var explanations = {
+          q1: "An agent uses AI to select actions toward a goal.",
+          q2: "Tools depend on the environment's capabilities and permissions.",
+          q3: "Results should be checked against evidence, tests, or review."
+        };
+
+        var score = 0;
+        var feedback = [];
+
+        Object.keys(correctAnswers).forEach(function (name) {
+          var selected = quizForm.querySelector(
+            'input[name="' + name + '"]:checked'
+          );
+
+          if (selected && selected.value === correctAnswers[name]) {
+            score++;
+          } else {
+            feedback.push(explanations[name]);
+          }
+        });
+
+        quizResult.textContent =
+          "Your score: " + score + " / 3. " +
+          (score === 3
+            ? "You have the key ideas."
+            : feedback.join(" "));
+      });
+
+      quizForm.addEventListener("change", function () {
+        quizResult.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>
