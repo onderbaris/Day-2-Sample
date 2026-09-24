@@ -29,3 +29,5 @@ Then open `index.html` in your browser. You can also serve the directory with a 
 - `script.js` — walkthrough, quiz, and theme behavior
 
 The guide remains readable with JavaScript disabled; the interactive features require JavaScript.
+
+Day 3 GitHub workflow verified.
